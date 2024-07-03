@@ -1,0 +1,234 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Movies & Songs Recommender</title>
+  </head>
+
+  <body
+    style="background-color: #101118; color: white; font-family: 'Montserrat'"
+  >
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'jquery-ui.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'styles.css' %}" />
+
+    <div class="form-box" style="margin-top: 5%">
+      <div class="button-box">
+        <div id="btn-switch"></div>
+        <button
+          type="button"
+          class="toggle-btn"
+          onclick="recMovie()"
+          style="font-weight: bold"
+        >
+          Movies
+        </button>
+        <button
+          type="button"
+          class="toggle-btn"
+          onclick="recSongs()"
+          style="font-weight: bold"
+        >
+          Songs
+        </button>
+      </div>
+    </div>
+   
+    <div id="movies">
+      <div class="container mb-md-5 text-center" style="margin-top: 7.5%">
+        <div class="row text-start">
+          <h1
+            style="
+              color: white;
+              font-weight: bolder;
+              font-size: 30pt;
+              padding-left: 20.5%;
+            "
+          >
+            Movie Recommender
+          </h1>
+          <div class="row mt-md-4 justify-content-center">
+            <form
+              class="col-md"
+              method="POST"
+              action="/movie/"
+              style="max-width: 60%"
+            >
+              {% csrf_token %}
+              <div>
+                <input
+                  placeholder="Enter Movie Name"
+                  class="form-control form-control-lg"
+                  id="tags_m"
+                  type="search"
+                  name="search"
+                  style="background-color: #33343f; color: white"
+                />
+                <br />
+                <button class="btn btn-outline-danger">Recommend</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {% if json_data %}
+      <div class="container" style="margin-top: 5%">
+        <h1 class="row" style="font-weight: bolder; margin-left: 10%">
+          You will love to watch:
+        </h1>
+        <div class="row">
+          {% for i in json_data.results %}
+
+          <div class="container">
+            <div
+              class="card mt-md-4"
+              style="
+                max-width: 80%;
+                max-height: fit-content;
+                margin: auto;
+                float: none;
+                background-color: #333546;
+              "
+            >
+              <div class="row g-0">
+                <div class="col-md-3">
+                  <img
+                    src="https://www.themoviedb.org/t/p/w1280/{{i.poster_path}}"
+                    class="img-fluid rounded-start"
+                    style="max-height: fit-content"
+                  />
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body ms-md-2">
+                    <h2
+                      class="card-title"
+                      style="font-family: 'Merriweather'; font-weight: 700"
+                    >
+                      {{i.title}}
+                    </h2>
+                    <p
+                      class="card-text"
+                      style="font-family: 'Merriweather'; font-style: italic"
+                    >
+                      {{i.overview}}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div id="songs" style="display: none">
+      <div class="container mb-md-5 text-center" style="margin-top: 7.5%">
+        <div class="row text-start">
+          <h1
+            style="
+              color: white;
+              font-weight: bolder;
+              font-size: 30pt;
+              padding-left: 20.5%;
+            "
+          >
+            Songs Recommender
+          </h1>
+          <div class="row mt-md-4 justify-content-center">
+            <form
+              class="col-md"
+              method="POST"
+              action="/songs/"
+              style="max-width: 60%"
+            >
+              {% csrf_token %}
+              <div>
+                <input
+                  placeholder="Enter Song Name"
+                  class="form-control form-control-lg"
+                  id="tags_s"
+                  type="search"
+                  name="search"
+                  style="background-color: #33343f; color: white"
+                />
+                <br />
+                <button class="btn btn-outline-danger">Recommend</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {% if json_data_s %}
+      <div class="container" style="margin-top: 5%">
+        <h1 class="row" style="font-weight: bolder; margin-left: 10%">
+          You will love to listen to:
+        </h1>
+        <div class="row mt-md-5 px-md-5">
+          {% for i in json_data_s.tracks %}
+
+          <div class="col mb-md-5">
+            <div
+              class="card"
+              style="
+                width: 15vw;
+                height: 60vh;
+                margin: auto;
+                float: none;
+                background-color: #333546;
+              "
+            >
+              <img src="{{i.image}}" class="card-img-top" style="max-height: 288px;" />
+              <div
+                class="card-body d-flex flex-column"
+                style="max-height: fit-content; color: white"
+              >
+                <h5
+                  class="card-title"
+                  style="font-family: 'Merriweather'; font-weight: 700"
+                >
+                  {{i.name}}
+                </h5>
+                <p
+                  class="card-text"
+                  style="font-family: 'Merriweather'; font-style: italic"
+                >
+                  {{i.artist.name}}
+                </p>
+                <a
+                  href="{{i.url}}"
+                  class="btn btn-primary mt-auto"
+                  target="_blank"
+                  >Get more info</a
+                >
+              </div>
+            </div>
+          </div>
+          {% endfor %} {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'jquery-3.6.1.min.js' %}"></script>
+    <script src="{% static 'jquery-ui.min.js' %}"></script>
+    <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'scripts.js' %}"></script>
+
+    <script>
+      $("#tags_m").autocomplete({
+        source: "{% url 'search_movie' %}",
+      });
+      $("#tags_s").autocomplete({
+        source: "{% url 'search_songs' %}",
+      });
+    </script>
+  </body>
+  <footer style="margin-top: 5%"></footer>
+</html>
